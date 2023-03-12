@@ -40,11 +40,35 @@ source .devops/bin/activate
 
 1. Standalone:  `python app.py`
 2. Run in Docker:  `./run_docker.sh`
-3. Run in Kubernetes:  `./run_kubernetes.sh`
+3. Run in Kubernetes:  `./upload_docker.sh && ./run_kubernetes.sh`
 
 ### Kubernetes Steps
 
 * Setup and Configure Docker locally
 * Setup and Configure Kubernetes locally
+* Create a kubernetes secret to store the credentials of the private Docker registry
+`
+  kubectl create secret docker-registry regcred \
+      --docker-server=https://index.docker.io/v1/ \
+      --docker-username=<DOCKERHUB_USERNAME> \
+      --docker-password=<DOCKERHUB_PASSWORD> \
+      --docker-email=<DOCKER_EMAIL>
+`
 * Create Flask app in Container
 * Run via kubectl
+
+## Directory Structure
+
+Directory/File =>	Description
+
+* .circleci/config.yml =>	CircleCI configuration
+* model_data =>	Trained model data for housing prices in Boston
+* output_txt_files =>	Docker and Kubernetes log output
+* app.py =>	REST Endpoint for predicting housing prices in Boston
+* Dockerfile =>	Dockerfile containing the application and its dependencies
+* make_prediction.sh =>	Calls prediction REST endpoint and simulates sample prediction
+* Makefile	Build file => of the project
+* requirements.txt =>	Python requirements
+* run_docker.sh =>	Shell script for creating and running docker container
+* run_kubernetes.sh =>	Shell script to deploy docker container on Kubernetes cluster
+* upload_docker.sh =>	Shell script for uploading locally built docker image to dockerhub repository
